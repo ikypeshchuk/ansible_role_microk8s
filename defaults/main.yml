@@ -64,3 +64,6 @@ add_workers_to_hostfile: false
 
 # for setting up custom certificate request.  Set to template name to enable
 #microk8s_csr_template: null
+
+# If you want to use IP addresses from the inventory file for the 'hosts' file
+is_inventory_host: false

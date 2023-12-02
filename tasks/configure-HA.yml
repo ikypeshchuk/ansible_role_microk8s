@@ -7,7 +7,11 @@
     marker: "# {mark} ANSIBLE MANAGED: microk8s HA Cluster Hosts"
     content: |
       {% for host in groups[microk8s_group_HA] %}
+      {% if is_inventory_host %}
+      {{ hostvars[host].ansible_host }} {{ hostvars[host].ansible_hostname }}
+      {% else %}
       {{ hostvars[host].ansible_default_ipv4.address }} {{ hostvars[host].ansible_hostname }}
+      {% endif %}
       {% endfor %}
 
 - name: Enumerate all cluster worker hosts within the hosts file
@@ -17,7 +21,11 @@
     marker: "# {mark} ANSIBLE MANAGED: microk8s WORKER Cluster Hosts"
     content: |
       {% for host in groups[microk8s_group_WORKERS] %}
+      {% if is_inventory_host %}
+      {{ hostvars[host].ansible_host }} {{ hostvars[host].ansible_hostname }}
+      {% else %}
       {{ hostvars[host].ansible_default_ipv4.address }} {{ hostvars[host].ansible_hostname }}
+      {% endif %}
       {% endfor %}
   when: add_workers_to_hostfile
 
