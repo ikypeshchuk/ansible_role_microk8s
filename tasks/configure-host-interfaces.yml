@@ -1,0 +1,47 @@
+---
+- name: Set based configurations
+  set_fact:
+    host_ip_address: "{{ hostvars[inventory_hostname]['ansible_host'] if use_inventory_host_ip_address else chi['host_ip_address'] }}"
+    script_path: "~/update_config.sh"
+
+- name: Copy update_config.sh script to the target machine
+  become: true
+  ansible.builtin.copy:
+    src: "{{ role_path }}/scripts/update_config.sh"
+    dest: "{{ script_path }}"
+    mode: '0755'
+
+- name: Configure kube-apiserver
+  become: true
+  ansible.builtin.shell: "{{ script_path }} '{{ item }}' '/var/snap/microk8s/current/args/kube-apiserver'"
+  loop: "{{ chi['kube_apiserver_config'] }}"
+
+- name: Configure kube-controller-manager
+  become: true
+  ansible.builtin.shell: "{{ script_path }} '{{ item }}' '/var/snap/microk8s/current/args/kube-controller-manager'"
+  loop: "{{ chi['kube_controller_manager_config'] }}"
+
+- name: Configure kube-scheduler
+  become: true
+  ansible.builtin.shell: "{{ script_path }} '{{ item }}' '/var/snap/microk8s/current/args/kube-scheduler'"
+  loop: "{{ chi['kube_scheduler_config'] }}"
+
+- name: Configure kube-proxy
+  become: true
+  ansible.builtin.shell: "{{ script_path }} '{{ item }}' '/var/snap/microk8s/current/args/kube-proxy'"
+  loop: "{{ chi['kube_proxy_config'] }}"
+
+- name: Configure kubelet
+  become: true
+  ansible.builtin.shell: "{{ script_path }} '{{ item }}' '/var/snap/microk8s/current/args/kubelet'"
+  loop: "{{ chi['kubelet_config'] }}"
+
+- name: Remove update_config.sh script after use
+  become: true
+  ansible.builtin.file:
+    path: "{{ script_path }}"
+    state: absent
+
+- name: Restart microk8s
+  become: true
+  command: snap restart microk8s

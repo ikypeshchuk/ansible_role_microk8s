@@ -1,6 +1,10 @@
 ---
 - import_tasks: install.yml
 
+- name: configure host interface
+  include_tasks: configure-host-interfaces.yml
+  when: "configure_host_interfaces"
+
 - name: configure users
   include_tasks: configure-groups.yml
   when: "users is defined and users not in ([], None, '', omit)"

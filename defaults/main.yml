@@ -67,3 +67,39 @@ add_workers_to_hostfile: false
 
 # If you want to use IP addresses from the inventory file for the 'hosts' file
 is_inventory_host: false
+
+# Example invertory file
+# ------------------------------
+# [microk8s_HA]
+# master-node-0 ansible_host=10.x.y.z ansible_user=username ansible_ssh_private_key_file=~/.ssh/id_rsa
+# [microk8s_WORKERS]
+# worker-node-0 ansible_host=10.x.y.z ansible_user=username ansible_ssh_private_key_file=~/.ssh/id_rsa
+# ------------------------------
+
+# Flag to control the configuration of host interfaces
+configure_host_interfaces: false
+
+# Determine if inventory host IP address should be used
+use_inventory_host_ip_address: false
+
+# Configuration Holder 'chi' (Custom Host Interfaces)
+chi:
+  # Default host IP address to use if not using inventory host IP
+  host_ip_address: "10.10.10.10"
+
+  # kube-apiserver configuration
+  kube_apiserver_config:
+    - "--advertise-address={{ host_ip_address }}"
+  
+  # kube-controller-manager configuration
+  kube_controller_manager_config: []
+
+  # kube-scheduler configuration
+  kube_scheduler_config: []
+
+  # kube-proxy configuration
+  kube_proxy_config: []
+
+  # kubelet configuration
+  kubelet_config:
+    - "--node-ip={{ host_ip_address }}"
