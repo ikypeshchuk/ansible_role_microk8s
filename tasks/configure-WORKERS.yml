@@ -10,6 +10,14 @@
     delegate_to: "{{ designated_host }}"
     delegate_facts: true
     changed_when: false
+  
+  - name: Set --refresh-interval to 0s in apiserver-proxy
+    lineinfile:
+      path: /var/snap/microk8s/current/args/apiserver-proxy
+      regexp: "^--refresh-interval=.*$"
+      line: "--refresh-interval=0s"
+      state: present
+      create: no
 
   - name: Get the microk8s join command from the microk8s master
     shell: "microk8s add-node | grep -E -m1 'microk8s join {{ microk8s_ip_regex_HA }}'"
