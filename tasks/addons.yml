@@ -2,7 +2,7 @@
   become: true
   command:
     cmd: microk8s.status --format yaml
-  changed_when: no
+  changed_when: false
   register: microk8s_status
   check_mode: false
 

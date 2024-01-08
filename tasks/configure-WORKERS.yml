@@ -17,7 +17,7 @@
       regexp: "^--refresh-interval=.*$"
       line: "--refresh-interval=0s"
       state: present
-      create: no
+      create: false
 
   - name: Get the microk8s join command from the microk8s master
     shell: "microk8s add-node | grep -E -m1 'microk8s join {{ microk8s_ip_regex_HA }}'"
@@ -49,7 +49,7 @@
       - "'already known to dqlite' not in join_command_output.stdout"
       - join_command_output.rc > 0
 
-  become: yes
+  become: true
   when:
     - inventory_hostname != designated_host
     - inventory_hostname in groups[microk8s_group_WORKERS]
